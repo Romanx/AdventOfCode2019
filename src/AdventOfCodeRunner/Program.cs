@@ -1,7 +1,6 @@
 ﻿using DayOne;
 using Helpers;
 using System;
-using System.Threading.Tasks;
 using Zio;
 using Zio.FileSystems;
 
@@ -9,12 +8,13 @@ namespace AdventOfCodeRunner
 {
     public class Program
     {
-        private static readonly ChallengeBase[] Challenges = new[]
+        private static readonly ChallengeBase[] Challenges = new ChallengeBase[]
         {
-            new DayOneChallenge()
+            new DayOneChallenge(),
+            new DayTwo.Challenge()
         };
 
-        public static async Task Main(string[] args)
+        public static void Main(string[] args)
         {
             var fs = new PhysicalFileSystem();
             var day = int.Parse(args[0]);
@@ -23,20 +23,46 @@ namespace AdventOfCodeRunner
             UPath basePath = fs.ConvertPathFromInternal(AppDomain.CurrentDomain.BaseDirectory);
             var inputPath = basePath / "../../../../../input";
 
-            var file = fs.ReadAllLines(inputPath / $"day-{day}.txt");
+            var file = fs.GetFileEntry(inputPath / $"day-{day}.txt");
 
-            await RunChallenge(Console.Out, file, challenge).ConfigureAwait(false);
+            RunChallenge(Console.Out, file, challenge);
         }
 
-        private static async Task RunChallenge(System.IO.TextWriter @out, string[] lines, ChallengeBase challenge)
+        private static void RunChallenge(System.IO.TextWriter @out, FileEntry file, ChallengeBase challenge)
         {
-            await @out.WriteHeader($"{challenge.Name} - Part 1");
-            await challenge.PartOne(lines, @out).ConfigureAwait(false);
+            switch (challenge)
+            {
+                case INeedLines challengeNeedsLines:
+                    RunWithLines(@out, file.ReadAllLines(), challengeNeedsLines);
+                    break;
+                case INeedAllInput challengeNeedsAllInput:
+                    RunWithAllInput(@out, file.ReadAllText(), challengeNeedsAllInput);
+                    break;
+                default:
+                    throw new InvalidOperationException("Must implement marker interface");
+            }
+        }
 
-            await @out.WriteLineAsync();
+        private static void RunWithLines(System.IO.TextWriter @out, string[] lines, INeedLines challenge)
+        {
+            @out.WriteHeader($"{challenge.Name} - Part 1");
+            challenge.PartOne(lines, @out);
 
-            await @out.WriteHeader($"{challenge.Name} - Part 2");
-            await challenge.PartTwo(lines, @out).ConfigureAwait(false);
+            @out.WriteLine();
+
+            @out.WriteHeader($"{challenge.Name} - Part 2");
+            challenge.PartTwo(lines, @out);
+        }
+
+        private static void RunWithAllInput(System.IO.TextWriter @out, string content, INeedAllInput challenge)
+        {
+            @out.WriteHeader($"{challenge.Name} - Part 1");
+            challenge.PartOne(content, @out);
+
+            @out.WriteLine();
+
+            @out.WriteHeader($"{challenge.Name} - Part 2");
+            challenge.PartTwo(content, @out);
         }
     }
 }

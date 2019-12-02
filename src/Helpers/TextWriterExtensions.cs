@@ -5,11 +5,11 @@ namespace Helpers
 {
     public static class TextWriterExtensions
     {
-        public static async Task WriteHeader(this TextWriter writer, string header)
+        public static void WriteHeader(this TextWriter writer, string header)
         {
-            await writer.WriteLineAsync(new string('*', header.Length + 6));
-            await writer.WriteLineAsync($"   {header}   ");
-            await writer.WriteLineAsync(new string('*', header.Length + 6));
+            writer.WriteLine(new string('*', header.Length + 6));
+            writer.WriteLine($"   {header}   ");
+            writer.WriteLine(new string('*', header.Length + 6));
         }
     }
 }

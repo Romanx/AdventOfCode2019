@@ -11,9 +11,23 @@ namespace Helpers
         }
 
         public string Name { get; }
+    }
 
-        public abstract Task PartOne(string[] lines, TextWriter @out);
+    public interface INeedLines
+    {
+        string Name { get; }
 
-        public abstract Task PartTwo(string[] lines, TextWriter @out);
+        void PartOne(string[] lines, TextWriter @out);
+
+        void PartTwo(string[] lines, TextWriter @out);
+    }
+
+    public interface INeedAllInput
+    {
+        string Name { get; }
+
+        void PartOne(string input, TextWriter @out);
+
+        void PartTwo(string input, TextWriter @out);
     }
 }
