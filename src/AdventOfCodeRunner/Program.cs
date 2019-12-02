@@ -1,5 +1,4 @@
-﻿using DayOne;
-using Helpers;
+﻿using Helpers;
 using System;
 using Zio;
 using Zio.FileSystems;
@@ -10,8 +9,8 @@ namespace AdventOfCodeRunner
     {
         private static readonly ChallengeBase[] Challenges = new ChallengeBase[]
         {
-            new DayOneChallenge(),
-            new DayTwo.Challenge()
+            new DayOne.Challenge(),
+            new DayTwo.Challenge(),
         };
 
         public static void Main(string[] args)

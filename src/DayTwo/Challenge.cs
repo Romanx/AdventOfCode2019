@@ -18,7 +18,7 @@ namespace DayTwo
             memory[1] = 12;
             memory[2] = 2;
 
-            var result = IntcodeComputer.Compute(memory);
+            var result = IntcodeComputer.Compute(memory.ToImmutableArray());
 
             @out.WriteLine($"Computer result: {result}");
         }
@@ -38,7 +38,7 @@ namespace DayTwo
                     scratch[1] = noun;
                     scratch[2] = verb;
 
-                    var result = IntcodeComputer.Compute(scratch);
+                    var result = IntcodeComputer.Compute(scratch.ToImmutableArray());
 
                     if (result == 19690720)
                     {
