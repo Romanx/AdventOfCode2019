@@ -29,9 +29,9 @@ namespace DayTwo
 
             var scratch = new int[memory.Length];
 
-            foreach (var noun in Enumerable.Range(0, 99))
+            foreach (var noun in Enumerable.Range(0, 100))
             {
-                foreach (var verb in Enumerable.Range(0, 99))
+                foreach (var verb in Enumerable.Range(0, 100))
                 {
                     memory.CopyTo(scratch);
 
