@@ -59,24 +59,52 @@ namespace AdventOfCodeRunner
 
         private static void RunWithLines(System.IO.TextWriter @out, string[] lines, INeedLines challenge)
         {
-            @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
-            challenge.PartOne(lines, @out);
+            try
+            {
+                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
+                challenge.PartOne(lines, @out);
+            }
+            catch (NotImplementedException)
+            {
+                @out.WriteLine("Not Yet Implemented".ToUpper());
+            }
 
             @out.WriteLine();
 
-            @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
-            challenge.PartTwo(lines, @out);
+            try
+            {
+                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
+                challenge.PartTwo(lines, @out);
+            }
+            catch (NotImplementedException)
+            {
+                @out.WriteLine("Not Yet Implemented".ToUpper());
+            }
         }
 
         private static void RunWithAllInput(System.IO.TextWriter @out, string content, INeedAllInput challenge)
         {
-            @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
-            challenge.PartOne(content, @out);
+            try
+            {
+                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
+                challenge.PartOne(content, @out);
+            }
+            catch (NotImplementedException)
+            {
+                @out.WriteLine("Not Yet Implemented".ToUpper());
+            }
 
             @out.WriteLine();
 
-            @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
-            challenge.PartTwo(content, @out);
+            try
+            {
+                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
+                challenge.PartTwo(content, @out);
+            }
+            catch (NotImplementedException)
+            {
+                @out.WriteLine("Not Yet Implemented".ToUpper());
+            }
         }
 
         private static Dictionary<int, ChallengeBase> LoadChallenges()

@@ -11,7 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Day*\*.csproj" />
+    <ProjectReference Include="..\Days\**\*.csproj" />
   </ItemGroup>
 
   <ItemGroup>
