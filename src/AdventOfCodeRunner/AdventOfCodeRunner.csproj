@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Day*\*.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Helpers\Helpers.csproj" />
+  </ItemGroup>
+
 </Project>

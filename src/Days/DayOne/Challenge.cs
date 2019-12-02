@@ -11,6 +11,8 @@ namespace DayOne
         {
         }
 
+        public override string Name => "The Tyranny of the Rocket Equation";
+
         public void PartOne(string[] lines, TextWriter @out)
         {
             var totalMass = lines

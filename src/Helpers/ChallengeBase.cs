@@ -6,15 +6,19 @@ namespace Helpers
     {
         protected ChallengeBase(int day)
         {
-            Name = $"Day {day}";
+            Day = day;
         }
 
-        public string Name { get; }
+        public abstract string Name { get; }
+
+        public int Day { get; }
     }
 
     public interface INeedLines
     {
         string Name { get; }
+
+        int Day { get; }
 
         void PartOne(string[] lines, TextWriter @out);
 
@@ -24,6 +28,8 @@ namespace Helpers
     public interface INeedAllInput
     {
         string Name { get; }
+
+        int Day { get; }
 
         void PartOne(string input, TextWriter @out);
 

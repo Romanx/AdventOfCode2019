@@ -11,6 +11,8 @@ namespace DayTwo
         {
         }
 
+        public override string Name => "1202 Program Alarm";
+
         public void PartOne(string input, TextWriter @out)
         {
             var memory = input.Split(',').Select(int.Parse).ToArray();
