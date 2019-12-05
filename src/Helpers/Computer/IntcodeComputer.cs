@@ -13,6 +13,9 @@ namespace Helpers
         const int HaltCode = 99;
 
         public static int Compute(ImmutableArray<int> memory)
+            => Compute(memory, new Runtime(new Stack<int>()));
+
+        public static int Compute(ImmutableArray<int> memory, Runtime runtime)
         {
             var scratch = new int[memory.Length];
             memory.CopyTo(scratch);
@@ -23,10 +26,11 @@ namespace Helpers
             while (memorySpan[index] != HaltCode)
             {
                 var op = memorySpan[index];
+                var (opCode, parameterModes) = ParseOperation(op);
 
-                if (_validInstructions.TryGetValue(op, out var instruction))
+                if (_validInstructions.TryGetValue(opCode, out var instruction))
                 {
-                    instruction.RunInstruction(ref index, ref memorySpan);
+                    instruction.RunInstruction(ref index, parameterModes, ref memorySpan, runtime);
                 }
                 else
                 {
@@ -46,5 +50,37 @@ namespace Helpers
                 .Select(t => (Instruction)Activator.CreateInstance(t))
                 .ToDictionary(k => k.OpCode, v => v);
         }
+
+        private static (int opCode, int[] parameterModes) ParseOperation(int op)
+        {
+            var operation = op.ToString().ToArray();
+            if (operation.Length == 1)
+            {
+                return (op, Array.Empty<int>());
+            }
+
+            var opCode = int.Parse(operation[^2..]);
+
+            if (operation.Length > 2)
+            {
+                var parameters = operation[..^2].Select(c => c - '0').Reverse().ToArray();
+
+                return (opCode, parameters);
+            }
+
+            return (opCode, Array.Empty<int>());
+        }
+    }
+
+    public class Runtime
+    {
+        public Runtime(Stack<int> input)
+        {
+            Input = input;
+        }
+
+        public Stack<int> Input { get; }
+
+        public Stack<int> Output { get; } = new Stack<int>();
     }
 }
