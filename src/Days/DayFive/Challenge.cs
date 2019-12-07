@@ -1,6 +1,5 @@
 ﻿using Helpers;
-using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -17,29 +16,30 @@ namespace DayFive
 
         public void PartOne(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse);
+            var memory = input.Split(',').Select(int.Parse)
+                .ToImmutableArray();
 
-            var inputVars = new Stack<int>();
-            inputVars.Push(1);
-            var runTime = new Runtime(inputVars);
+            var computer = new IntcodeComputer(memory);
+            computer.Input.Enqueue(1);
 
-            var result = IntcodeComputer.Compute(memory.ToImmutableArray(), runTime);
+            computer.Run();
 
-            var output = runTime.Output.Pop();
+            var output = computer.Output.Last();
 
             @out.WriteLine($"Computer result: {output}");
         }
 
         public void PartTwo(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse);
+            var memory = input.Split(',').Select(int.Parse)
+                .ToImmutableArray();
 
-            var inputVars = new Stack<int>();
-            inputVars.Push(5);
-            var runTime = new Runtime(inputVars);
-            var result = IntcodeComputer.Compute(memory.ToImmutableArray(), runTime);
+            var computer = new IntcodeComputer(memory);
+            computer.Input.Enqueue(5);
 
-            var output = runTime.Output.Pop();
+            computer.Run();
+
+            var output = computer.Output.Last();
 
             @out.WriteLine($"Computer result: {output}");
         }

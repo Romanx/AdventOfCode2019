@@ -4,13 +4,13 @@ namespace Helpers.Instructions
 {
     internal abstract class Instruction
     {
-        public abstract int OpCode { get; }
+        public abstract OpCodes OpCode { get; }
 
         public abstract ParameterType[] Parameters { get; }
 
-        public abstract void RunInstruction(ref int index, in ReadOnlySpan<int> parameterModes, ref Span<int> memory, Runtime runtime);
+        public abstract void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory);
 
-        protected ReadOnlySpan<int> GetParameters(
+        public ReadOnlySpan<int> GetParameters(
             in int index,
             in ReadOnlySpan<int> parameterModes,
             in ReadOnlySpan<int> memory)
@@ -46,21 +46,5 @@ namespace Helpers.Instructions
 
             return results;
         }
-    }
-
-    internal struct Parameter
-    {
-        public Parameter(int mode, ParameterType type)
-        {
-            if (type == ParameterType.Write && mode != 0)
-                throw new InvalidOperationException("Write must be in mode zero");
-        }
-    }
-
-    internal enum ParameterType
-    {
-        NotSet,
-        Read,
-        Write
     }
 }

@@ -5,18 +5,16 @@ namespace Helpers.Computer.Instructions
 {
     internal class WriteInstruction : Instruction
     {
-        public override int OpCode => 4;
+        public override OpCodes OpCode => OpCodes.Write;
 
         public override ParameterType[] Parameters => new []
         {
             ParameterType.Read
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameterModes, ref Span<int> memory, Runtime runtime)
+        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
         {
-            var parameter = GetParameters(index, parameterModes, memory);
-
-            runtime.Output.Push(parameter[0]);
+            runtime.Output.Enqueue(parameters[0]);
 
             index += 2;
         }

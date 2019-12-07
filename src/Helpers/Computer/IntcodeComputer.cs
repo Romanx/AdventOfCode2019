@@ -6,31 +6,42 @@ using System.Linq;
 
 namespace Helpers
 {
-    public static class IntcodeComputer
+    public class IntcodeComputer
     {
-        private static readonly Dictionary<int, Instruction> _validInstructions = BuildInstructions();
-
+        private static readonly Dictionary<OpCodes, Instruction> _validInstructions = BuildInstructions();
         const int HaltCode = 99;
 
-        public static int Compute(ImmutableArray<int> memory)
-            => Compute(memory, new Runtime(new Stack<int>()));
+        private int[] _memory;
+        private int index = 0;
 
-        public static int Compute(ImmutableArray<int> memory, Runtime runtime)
+        public Queue<int> Input { get; } = new Queue<int>();
+
+        public Queue<int> Output { get; } = new Queue<int>();
+
+        public IntcodeComputer(ImmutableArray<int> memory)
         {
             var scratch = new int[memory.Length];
             memory.CopyTo(scratch);
 
-            var memorySpan = scratch.AsSpan();
-            int index = 0;
+            _memory = scratch;
+        }
 
-            while (memorySpan[index] != HaltCode)
+        public IncodeResult Run()
+        {
+            while (_memory[index] != HaltCode)
             {
-                var op = memorySpan[index];
+                var op = _memory[index];
                 var (opCode, parameterModes) = ParseOperation(op);
 
                 if (_validInstructions.TryGetValue(opCode, out var instruction))
                 {
-                    instruction.RunInstruction(ref index, parameterModes, ref memorySpan, runtime);
+                    if (opCode == OpCodes.Read && Input.Count == 0)
+                    {
+                        return IncodeResult.HALT_FORINPUT;
+                    }
+
+                    var @params = instruction.GetParameters(index, parameterModes, _memory);
+                    instruction.RunInstruction(ref index, @params, this, ref _memory);
                 }
                 else
                 {
@@ -38,10 +49,30 @@ namespace Helpers
                 }
             }
 
-            return memorySpan[0];
+            if (Output.Count == 0)
+            {
+                Output.Enqueue(_memory[0]);
+            }
+
+            return IncodeResult.HALT_TERMINATE;
         }
 
-        private static Dictionary<int, Instruction> BuildInstructions()
+        private static (OpCodes opCode, int[] parameterModes) ParseOperation(int op)
+        {
+            var operation = op.ToString().ToArray();
+            if (operation.Length == 1)
+            {
+                return ((OpCodes)op, Array.Empty<int>());
+            }
+
+            var opCode = int.Parse(operation[^2..]);
+
+            var parameters = operation[..^2].Select(c => c - '0').Reverse().ToArray();
+
+            return ((OpCodes)opCode, parameters);
+        }
+
+        private static Dictionary<OpCodes, Instruction> BuildInstructions()
         {
             return typeof(Instruction)
                 .Assembly
@@ -50,37 +81,5 @@ namespace Helpers
                 .Select(t => (Instruction)Activator.CreateInstance(t))
                 .ToDictionary(k => k.OpCode, v => v);
         }
-
-        private static (int opCode, int[] parameterModes) ParseOperation(int op)
-        {
-            var operation = op.ToString().ToArray();
-            if (operation.Length == 1)
-            {
-                return (op, Array.Empty<int>());
-            }
-
-            var opCode = int.Parse(operation[^2..]);
-
-            if (operation.Length > 2)
-            {
-                var parameters = operation[..^2].Select(c => c - '0').Reverse().ToArray();
-
-                return (opCode, parameters);
-            }
-
-            return (opCode, Array.Empty<int>());
-        }
-    }
-
-    public class Runtime
-    {
-        public Runtime(Stack<int> input)
-        {
-            Input = input;
-        }
-
-        public Stack<int> Input { get; }
-
-        public Stack<int> Output { get; } = new Stack<int>();
     }
 }

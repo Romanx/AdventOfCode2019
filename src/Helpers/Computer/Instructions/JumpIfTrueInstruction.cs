@@ -5,7 +5,7 @@ namespace Helpers.Computer.Instructions
 {
     internal class JumpIfTrueInstruction : Instruction
     {
-        public override int OpCode => 5;
+        public override OpCodes OpCode => OpCodes.JumpIfTrue;
 
         public override ParameterType[] Parameters => new ParameterType[]
         {
@@ -13,13 +13,11 @@ namespace Helpers.Computer.Instructions
             ParameterType.Read
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameterModes, ref Span<int> memory, Runtime runtime)
+        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
         {
-            var instructionParameters = GetParameters(index, parameterModes, memory);
-
-            if (instructionParameters[0] != 0)
+            if (parameters[0] != 0)
             {
-                index = instructionParameters[1];
+                index = parameters[1];
             }
             else
             {

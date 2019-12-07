@@ -5,18 +5,18 @@ namespace Helpers.Computer.Instructions
 {
     internal class ReadInstruction : Instruction
     {
-        public override int OpCode => 3;
+        public override OpCodes OpCode => OpCodes.Read;
 
         public override ParameterType[] Parameters { get; } = new[]
         {
             ParameterType.Write
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameterModes, ref Span<int> memory, Runtime runtime)
+        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer computer, ref int[] memory)
         {
             var outputAddress = memory[index + 1];
 
-            var input = runtime.Input.Pop();
+            var input = computer.Input.Dequeue();
 
             memory[outputAddress] = input;
 

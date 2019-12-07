@@ -5,7 +5,7 @@ namespace Helpers.Computer.Instructions
 {
     internal class LessThanInstruction : Instruction
     {
-        public override int OpCode => 7;
+        public override OpCodes OpCode => OpCodes.LessThan;
 
         public override ParameterType[] Parameters => new ParameterType[]
         {
@@ -14,13 +14,11 @@ namespace Helpers.Computer.Instructions
             ParameterType.Write
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameterModes, ref Span<int> memory, Runtime runtime)
+        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
         {
-            var instructionParameters = GetParameters(index, parameterModes, memory);
-
-            var first = instructionParameters[0];
-            var second = instructionParameters[1];
-            var outAddress = instructionParameters[2];
+            var first = parameters[0];
+            var second = parameters[1];
+            var outAddress = parameters[2];
 
             memory[outAddress] = first < second
                 ? 1

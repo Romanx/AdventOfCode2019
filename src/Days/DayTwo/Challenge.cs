@@ -20,9 +20,11 @@ namespace DayTwo
             memory[1] = 12;
             memory[2] = 2;
 
-            var result = IntcodeComputer.Compute(memory.ToImmutableArray());
+            var computer = new IntcodeComputer(memory.ToImmutableArray());
+            computer.Run();
+            var output = computer.Output.Dequeue();
 
-            @out.WriteLine($"Computer result: {result}");
+            @out.WriteLine($"Computer result: {output}");
         }
 
         public void PartTwo(string input, TextWriter @out)
@@ -40,15 +42,20 @@ namespace DayTwo
                     scratch[1] = noun;
                     scratch[2] = verb;
 
-                    var result = IntcodeComputer.Compute(scratch.ToImmutableArray());
+                    var computer = new IntcodeComputer(scratch.ToImmutableArray());
+                    computer.Run();
+                    var result = computer.Output.Dequeue();
 
                     if (result == 19690720)
                     {
                         @out.WriteLine($"Noun: {noun}, Verb: {verb}");
                         @out.WriteLine($"Result: 100 * {noun} + {verb} = {100 * noun + verb}");
+                        goto end;
                     }
                 }
             }
+            end:
+            @out.WriteLine("Done");
         }
     }
 }
