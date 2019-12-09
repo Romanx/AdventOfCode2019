@@ -1,6 +1,7 @@
 ﻿using Helpers;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Zio;
 using Zio.FileSystems;
@@ -28,7 +29,7 @@ namespace AdventOfCodeRunner
             RunChallenge(Console.Out, file, challenge);
         }
 
-        private static int GetDay(System.IO.TextWriter @out)
+        private static int GetDay(TextWriter @out)
         {
             Console.Clear();
             @out.WriteHeader("Advent of Code!");
@@ -42,39 +43,37 @@ namespace AdventOfCodeRunner
             return int.Parse(day);
         }
 
-        private static void RunChallenge(System.IO.TextWriter @out, FileEntry file, ChallengeBase challenge)
+        private static void RunChallenge(TextWriter @out, FileEntry file, ChallengeBase challenge)
         {
             switch (challenge)
             {
-                case INeedLines challengeNeedsLines:
-                    RunWithLines(@out, file.ReadAllLines(), challengeNeedsLines);
+                case INeedLines needLines:
+                    Run(@out, file.ReadAllLines(), needLines, challenge);
                     break;
-                case INeedAllInput challengeNeedsAllInput:
-                    RunWithAllInput(@out, file.ReadAllText(), challengeNeedsAllInput);
+                case INeedAllInput needAll:
+                    Run(@out, file.ReadAllText(), needAll, challenge);
                     break;
                 default:
                     throw new InvalidOperationException("Must implement marker interface");
             }
         }
 
-        private static void RunWithLines(System.IO.TextWriter @out, string[] lines, INeedLines challenge)
+        private static void Run<T>(TextWriter @out, T input, INeedInput<T> runner, ChallengeBase challenge)
+        {
+            RunWithInput(@out, input, WriteHeader(1, challenge), (writer, input) => runner.PartOne(input, writer));
+            RunWithInput(@out, input, WriteHeader(2, challenge), (writer, input) => runner.PartTwo(input, writer));
+        }
+
+        private static void RunWithInput<T>(
+            TextWriter @out,
+            T input,
+            Action<TextWriter> headerWriter,
+            Action<TextWriter, T> runStep) 
         {
             try
             {
-                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
-                challenge.PartOne(lines, @out);
-            }
-            catch (NotImplementedException)
-            {
-                @out.WriteLine("Not Yet Implemented".ToUpper());
-            }
-
-            @out.WriteLine();
-
-            try
-            {
-                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
-                challenge.PartTwo(lines, @out);
+                headerWriter(@out);
+                runStep(@out, input);
             }
             catch (NotImplementedException)
             {
@@ -82,30 +81,8 @@ namespace AdventOfCodeRunner
             }
         }
 
-        private static void RunWithAllInput(System.IO.TextWriter @out, string content, INeedAllInput challenge)
-        {
-            try
-            {
-                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 1");
-                challenge.PartOne(content, @out);
-            }
-            catch (NotImplementedException)
-            {
-                @out.WriteLine("Not Yet Implemented".ToUpper());
-            }
-
-            @out.WriteLine();
-
-            try
-            {
-                @out.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part 2");
-                challenge.PartTwo(content, @out);
-            }
-            catch (NotImplementedException)
-            {
-                @out.WriteLine("Not Yet Implemented".ToUpper());
-            }
-        }
+        private static Action<TextWriter> WriteHeader(int part, ChallengeBase challenge) 
+            => (TextWriter writer) => writer.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part {part}");
 
         private static Dictionary<int, ChallengeBase> LoadChallenges()
         {
@@ -121,7 +98,7 @@ namespace AdventOfCodeRunner
 
             static ChallengeBase LoadChallenge(FileEntry entry, CollectibleAssemblyLoadContext context)
             {
-                using var fs = entry.Open(System.IO.FileMode.Open, System.IO.FileAccess.Read);
+                using var fs = entry.Open(FileMode.Open, FileAccess.Read);
                 var assembly = context.LoadFromStream(fs);
 
                 return assembly
