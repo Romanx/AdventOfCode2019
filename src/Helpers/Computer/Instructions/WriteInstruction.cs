@@ -12,11 +12,11 @@ namespace Helpers.Computer.Instructions
             ParameterType.Read
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
+        public override void RunInstruction(in ReadOnlySpan<long> parameters, IntcodeComputer runtime)
         {
             runtime.Output.Enqueue(parameters[0]);
 
-            index += 2;
+            runtime.AdjustIndexBy(2);
         }
     }
 }

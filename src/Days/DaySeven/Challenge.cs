@@ -18,7 +18,7 @@ namespace DaySeven
 
         public void PartOne(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse)
+            var memory = input.Split(',').Select(long.Parse)
                 .ToImmutableArray();
 
             var phaseCombinations = GeneratePhaseSettings(0);
@@ -41,7 +41,7 @@ namespace DaySeven
 
         public void PartTwo(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse)
+            var memory = input.Split(',').Select(long.Parse)
                    .ToImmutableArray();
 
             var phaseCombinations = GeneratePhaseSettings(5)
@@ -63,7 +63,7 @@ namespace DaySeven
             @out.WriteLine($"Max thruster signal {thrusterOutput} (from phase setting sequence {string.Join(",", phaseCombination)})");
         }
 
-        public int RunThrusterProgram(ImmutableArray<int> memory, int[] phaseCombination)
+        public int RunThrusterProgram(ImmutableArray<long> memory, int[] phaseCombination)
         {
             var signal = 0;
             foreach (var phase in phaseCombination)
@@ -74,13 +74,13 @@ namespace DaySeven
 
                 computer.Run();
 
-                signal = computer.Output.Dequeue();
+                signal = (int)computer.Output.Dequeue();
             }
 
             return signal;
         }
 
-        public int RunThrusterProgramInFeedback(ImmutableArray<int> memory, int[] phaseCombination)
+        public int RunThrusterProgramInFeedback(ImmutableArray<long> memory, int[] phaseCombination)
         {
             var computers = new List<IntcodeComputer>();
             var thrusters = new Queue<IntcodeComputer>(phaseCombination.Length);
@@ -100,7 +100,7 @@ namespace DaySeven
                 computer.Input.Enqueue(signal);
                 var result = computer.Run();
 
-                signal = computer.Output.Dequeue();
+                signal = (int)computer.Output.Dequeue();
                 if (result == IncodeResult.HALT_FORINPUT)
                 {
                     thrusters.Enqueue(computer);

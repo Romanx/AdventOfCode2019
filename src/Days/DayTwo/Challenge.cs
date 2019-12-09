@@ -15,7 +15,7 @@ namespace DayTwo
 
         public void PartOne(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse).ToArray();
+            var memory = input.Split(',').Select(long.Parse).ToArray();
 
             memory[1] = 12;
             memory[2] = 2;
@@ -29,9 +29,9 @@ namespace DayTwo
 
         public void PartTwo(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse).ToImmutableArray();
+            var memory = input.Split(',').Select(long.Parse).ToImmutableArray();
 
-            var scratch = new int[memory.Length];
+            var scratch = new long[memory.Length];
 
             foreach (var noun in Enumerable.Range(0, 100))
             {

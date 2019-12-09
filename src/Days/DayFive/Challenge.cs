@@ -16,7 +16,7 @@ namespace DayFive
 
         public void PartOne(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse)
+            var memory = input.Split(',').Select(long.Parse)
                 .ToImmutableArray();
 
             var computer = new IntcodeComputer(memory);
@@ -31,7 +31,7 @@ namespace DayFive
 
         public void PartTwo(string input, TextWriter @out)
         {
-            var memory = input.Split(',').Select(int.Parse)
+            var memory = input.Split(',').Select(long.Parse)
                 .ToImmutableArray();
 
             var computer = new IntcodeComputer(memory);

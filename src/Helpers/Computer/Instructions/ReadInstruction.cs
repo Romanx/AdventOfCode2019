@@ -12,15 +12,14 @@ namespace Helpers.Computer.Instructions
             ParameterType.Write
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer computer, ref int[] memory)
+        public override void RunInstruction(in ReadOnlySpan<long> parameters, IntcodeComputer runtime)
         {
-            var outputAddress = memory[index + 1];
+            var outputAddress = (int)parameters[0];
 
-            var input = computer.Input.Dequeue();
+            var input = runtime.Input.Dequeue();
 
-            memory[outputAddress] = input;
-
-            index += 2;
+            runtime.WriteToMemory(outputAddress, input);
+            runtime.AdjustIndexBy(2);
         }
     }
 }

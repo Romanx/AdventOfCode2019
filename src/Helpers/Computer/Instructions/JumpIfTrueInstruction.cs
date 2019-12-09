@@ -13,15 +13,15 @@ namespace Helpers.Computer.Instructions
             ParameterType.Read
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
+        public override void RunInstruction(in ReadOnlySpan<long> parameters, IntcodeComputer runtime)
         {
             if (parameters[0] != 0)
             {
-                index = parameters[1];
+                runtime.SetIndex((int)parameters[1]);
             }
             else
             {
-                index += 3;
+                runtime.AdjustIndexBy(3);
             }
         }
     }

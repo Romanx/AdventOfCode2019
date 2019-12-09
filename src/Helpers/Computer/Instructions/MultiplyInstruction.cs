@@ -13,11 +13,10 @@ namespace Helpers.Instructions
             ParameterType.Write
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
+        public override void RunInstruction(in ReadOnlySpan<long> parameters, IntcodeComputer runtime)
         {
-            memory[parameters[2]] = parameters[0] * parameters[1];
-
-            index += 4;
+            runtime.WriteToMemory((int)parameters[2], parameters[0] * parameters[1]);
+            runtime.AdjustIndexBy(4);
         }
     }
 }

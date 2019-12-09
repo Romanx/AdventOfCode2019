@@ -14,17 +14,18 @@ namespace Helpers.Computer.Instructions
             ParameterType.Write
         };
 
-        public override void RunInstruction(ref int index, in ReadOnlySpan<int> parameters, IntcodeComputer runtime, ref int[] memory)
+        public override void RunInstruction(in ReadOnlySpan<long> parameters, IntcodeComputer runtime)
         {
             var first = parameters[0];
             var second = parameters[1];
-            var outAddress = parameters[2];
+            var outAddress = (int)parameters[2];
 
-            memory[outAddress] = first < second
+            var result = first < second
                 ? 1
                 : 0;
 
-            index += 4;
+            runtime.WriteToMemory(outAddress, result);
+            runtime.AdjustIndexBy(4);
         }
     }
 }
