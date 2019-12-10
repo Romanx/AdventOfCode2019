@@ -21,10 +21,11 @@ namespace DayTen
             var map = Map.Parse(input);
 
             var best = map.Points
-                .OrderByDescending(point => CountVisibleAsteroids(map, point))
+                .Select(p => (Point: p, Visible: CountVisibleAsteroids(map, p)))
+                .OrderByDescending(i => i.Visible)
                 .First();
 
-            @out.WriteLine($"Best Asteroid is: {best} with {CountVisibleAsteroids(map, best)} visible");
+            @out.WriteLine($"Best Asteroid is: {best.Point} with {best.Visible} visible");
         }
 
         public void PartTwo(string[] input, TextWriter @out)
@@ -56,25 +57,24 @@ namespace DayTen
 
         private ImmutableArray<Point> DestroyedOrderList(Map map, Point station)
         {
-            var sorted = new SortedDictionary<double, Queue<Point>>(map.Points.Where(p => p != station)
+            var sorted = map.Points.Where(p => p != station)
                 .GroupBy(o => AngleInDegrees(station, o))
-                .ToDictionary(k => k.Key, v => new Queue<Point>(v.OrderBy(x => ManhattanDistance(x, station)))));
+                .Select(g => (Angle: g.Key, Queue: new Queue<Point>(g.OrderBy(x => ManhattanDistance(x, station)))))
+                .OrderBy(x => x.Angle)
+                .ToImmutableList();
 
             var banged = ImmutableArray.CreateBuilder<Point>(map.Points.Length);
 
             while (sorted.Count > 0)
             {
-                foreach (var kvp in sorted)
+                foreach (var (_, asteroids) in sorted)
                 {
-                    var asteroids = kvp.Value;
                     var asteroid = asteroids.Dequeue();
 
                     banged.Add(asteroid);
                 }
 
-                sorted = new SortedDictionary<double, Queue<Point>>(sorted
-                    .Where(pair => pair.Value.Count > 0)
-                    .ToDictionary(pair => pair.Key, pair => pair.Value));
+                sorted = sorted.RemoveAll(i => i.Queue.Count == 0);
             }
 
             return banged.ToImmutable();
