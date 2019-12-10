@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 
-namespace DayThree
+namespace Helpers.Points
 {
     public class Point : IEquatable<Point>
     {
@@ -11,7 +12,10 @@ namespace DayThree
         }
 
         public int X { get; }
+
         public int Y { get; }
+
+        public override string ToString() => $"{X}, {Y}";
 
         public override bool Equals(object? obj)
         {
@@ -20,7 +24,7 @@ namespace DayThree
 
         public bool Equals(Point? other)
         {
-            return other != null &&
+            return !(other is null) &&
                    X == other.X &&
                    Y == other.Y;
         }
@@ -30,6 +34,14 @@ namespace DayThree
             return HashCode.Combine(X, Y);
         }
 
-        public override string ToString() => $"{X}, {Y}";
+        public static bool operator ==(Point left, Point right)
+        {
+            return EqualityComparer<Point>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Point left, Point right)
+        {
+            return !(left == right);
+        }
     }
 }

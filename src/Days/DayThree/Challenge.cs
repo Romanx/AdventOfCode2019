@@ -1,4 +1,5 @@
 ﻿using Helpers;
+using Helpers.Points;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -21,10 +22,10 @@ namespace DayThree
         {
             var mappedLines = lines.Select(ParseLine).ToArray();
             var closest = GetLineIntersections(mappedLines)
-                .OrderBy(x => ManhattanDistance(CentralPort, x))
+                .OrderBy(x => PointHelpers.ManhattanDistance(CentralPort, x))
                 .First();
 
-            var distance = ManhattanDistance(closest, CentralPort);
+            var distance = PointHelpers.ManhattanDistance(closest, CentralPort);
 
             @out.WriteLine($"Closest point to CentralPort: {closest}: Distance {distance}");
         }
@@ -92,11 +93,6 @@ namespace DayThree
             }
 
             return points.ToImmutableArray();
-        }
-
-        public static int ManhattanDistance(Point p1, Point p2)
-        {
-            return Math.Abs(p1.X - p2.X) + Math.Abs(p1.Y - p2.Y);
         }
 
         private IEnumerable<Point> CommandToPoints(Point start, string command)
