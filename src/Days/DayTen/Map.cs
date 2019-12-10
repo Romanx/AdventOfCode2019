@@ -15,7 +15,7 @@ namespace DayTen
 
         public static Map Parse(string[] lines)
         {
-            var points = new List<Point>();
+            var points = ImmutableArray.CreateBuilder<Point>();
 
             for (var y = 0; y < lines.Length; y++)
             {
@@ -27,7 +27,7 @@ namespace DayTen
                 }
             }
 
-            return new Map(points.ToImmutableArray());
+            return new Map(points.ToImmutable());
         }
     }
 }
