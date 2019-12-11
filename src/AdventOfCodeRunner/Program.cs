@@ -20,10 +20,13 @@ namespace AdventOfCodeRunner
 
             var fs = new PhysicalFileSystem();
             UPath basePath = fs.ConvertPathFromInternal(AppDomain.CurrentDomain.BaseDirectory);
-            var inputPath = basePath / "../../../../../input";
+            var root = basePath / "../../../../../";
+            var inputPath = root / "input";
+            var outputPath = root / "output";
 
             var challenge = Challenges[day];
             var file = fs.GetFileEntry(inputPath / $"day-{day}.txt");
+            challenge.OutDirectory = CreateDayOuputDirectory(day, outputPath, fs);
 
             Console.Clear();
             RunChallenge(Console.Out, file, challenge);
@@ -83,6 +86,19 @@ namespace AdventOfCodeRunner
 
         private static Action<TextWriter> WriteHeader(int part, ChallengeBase challenge) 
             => (TextWriter writer) => writer.WriteHeader($"Day {challenge.Day}: {challenge.Name} - Part {part}");
+
+        private static DirectoryEntry CreateDayOuputDirectory(int day, UPath outputPath, FileSystem fs)
+        {
+            var dir = outputPath / $"day-{day}";
+
+            if (fs.DirectoryExists(dir))
+            {
+                fs.DeleteDirectory(dir, true);
+            }
+            fs.CreateDirectory(dir);
+
+            return fs.GetDirectoryEntry(dir);
+        }
 
         private static Dictionary<int, ChallengeBase> LoadChallenges()
         {
