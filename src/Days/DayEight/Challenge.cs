@@ -1,4 +1,7 @@
 ﻿using Helpers;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
 using System;
 using System.IO;
 using System.Linq;
@@ -33,13 +36,13 @@ namespace DayEight
             var image = Image.ParseSpaceImageFormat(input, 25, 6);
 
             Image squashed = image.Squash();
-            PrintImage(squashed);
+            PrintImageToConsole(squashed);
+            PrintImageToOutput(squashed);
         }
 
-        public void PrintImage(Image image)
+        public void PrintImageToConsole(Image image)
         {
             var pixels = image.Layers[0].Pixels;
-
             for (var y = 0; y < image.Height; y++)
             {
                 for (var x = 0; x < image.Width; x++)
@@ -62,6 +65,28 @@ namespace DayEight
                     Console.ResetColor();
                 }
                 Console.WriteLine();
+            }
+        }
+
+        public void PrintImageToOutput(Image image)
+        {
+            var pixels = image.Layers[0].Pixels;
+            var file = CreateOutputFile("part2.jpg");
+
+            using (var outImage = new Image<Rgba32>(image.Width, image.Height))
+            {
+                for (var y = 0; y < image.Height; y++)
+                {
+                    for (var x = 0; x < image.Width; x++)
+                    {
+                        outImage[x, y] = pixels[y, x] == 1
+                            ? Rgba32.White
+                            : Rgba32.Black;
+                    }
+                }
+
+                outImage.Mutate(x => x.Resize(image.Width * 10, image.Height * 10).Pixelate(10));
+                outImage.SaveAsJpeg(file);
             }
         }
     }
