@@ -1,4 +1,5 @@
 ﻿using Helpers;
+using MoreLinq;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Immutable;
@@ -23,7 +24,7 @@ namespace DaySeven
 
             var phaseCombinations = GeneratePhaseSettings(0);
 
-            var bag = new ConcurrentBag<(int[] PhaseCombination, int ThrusterOutput)>();
+            var bag = new ConcurrentBag<(IList<int> PhaseCombination, int ThrusterOutput)>();
 
             Parallel.ForEach(phaseCombinations, phaseCombination =>
             {
@@ -47,7 +48,7 @@ namespace DaySeven
             var phaseCombinations = GeneratePhaseSettings(5)
                 .ToArray();
 
-            var bag = new ConcurrentBag<(int[] PhaseCombination, int ThrusterOutput)>();
+            var bag = new ConcurrentBag<(IList<int> PhaseCombination, int ThrusterOutput)>();
 
             Parallel.ForEach(phaseCombinations, phaseCombination =>
             {
@@ -63,7 +64,7 @@ namespace DaySeven
             @out.WriteLine($"Max thruster signal {thrusterOutput} (from phase setting sequence {string.Join(",", phaseCombination)})");
         }
 
-        public int RunThrusterProgram(ImmutableArray<long> memory, int[] phaseCombination)
+        public int RunThrusterProgram(ImmutableArray<long> memory, IList<int> phaseCombination)
         {
             var signal = 0;
             foreach (var phase in phaseCombination)
@@ -80,11 +81,11 @@ namespace DaySeven
             return signal;
         }
 
-        public int RunThrusterProgramInFeedback(ImmutableArray<long> memory, int[] phaseCombination)
+        public int RunThrusterProgramInFeedback(ImmutableArray<long> memory, IList<int> phaseCombination)
         {
             var computers = new List<IntcodeComputer>();
-            var thrusters = new Queue<IntcodeComputer>(phaseCombination.Length);
-            for (var i = 0; i < phaseCombination.Length; i++)
+            var thrusters = new Queue<IntcodeComputer>(phaseCombination.Count);
+            for (var i = 0; i < phaseCombination.Count; i++)
             {
                 var computer = new IntcodeComputer(memory);
                 computer.Input.Enqueue(phaseCombination[i]);
@@ -110,26 +111,7 @@ namespace DaySeven
             return signal;
         }
 
-        public IEnumerable<int[]> GeneratePhaseSettings(int start)
-        {
-            foreach (var i in Enumerable.Range(start, 5))
-            {
-                foreach (var j in Enumerable.Range(start, 5))
-                {
-                    foreach (var k in Enumerable.Range(start, 5))
-                    {
-                        foreach (var l in Enumerable.Range(start, 5))
-                        {
-                            foreach (var m in Enumerable.Range(start, 5))
-                            {
-                                var rs = new[] { i, j, k, l, m };
-                                if (rs.Distinct().Count() == 5)
-                                    yield return rs;
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        public IEnumerable<IList<int>> GeneratePhaseSettings(int start)
+            => Enumerable.Range(start, 5).Permutations();
     }
 }
