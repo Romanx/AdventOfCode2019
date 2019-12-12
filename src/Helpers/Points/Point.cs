@@ -1,19 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Helpers.Points
 {
     public class Point : IEquatable<Point>
     {
+        private readonly ImmutableArray<int> _coords;
+
         public Point(int x, int y)
         {
-            X = x;
-            Y = y;
+            _coords = ImmutableArray.Create(x, y);
         }
 
-        public int X { get; }
+        public int X => _coords[0];
 
-        public int Y { get; }
+        public int Y => _coords[1];
 
         public override string ToString() => $"{X}, {Y}";
 
@@ -46,5 +48,11 @@ namespace Helpers.Points
 
         public static Point operator +(Point left, Point right)
             => new Point(left.X + right.X, left.Y + right.Y);
+
+        public void Deconstruct(out int x, out int y)
+        {
+            x = _coords[0];
+            y = _coords[1];
+        }
     }
 }
