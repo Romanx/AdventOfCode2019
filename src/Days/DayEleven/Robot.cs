@@ -74,7 +74,7 @@ namespace DayEleven
                 computer.Input.Enqueue(colour);
                 var result = computer.Run();
 
-                if (result == IncodeResult.HALT_TERMINATE)
+                if (result == IntcodeResult.HALT_TERMINATE)
                 {
                     break;
                 }

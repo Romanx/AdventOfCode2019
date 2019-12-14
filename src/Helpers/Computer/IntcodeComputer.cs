@@ -28,7 +28,7 @@ namespace Helpers
             _memory = scratch;
         }
 
-        public IncodeResult Run()
+        public IntcodeResult Run()
         {
             while (_memory[_index] != HaltCode)
             {
@@ -39,7 +39,7 @@ namespace Helpers
                 {
                     if (opCode == OpCodes.Read && Input.Count == 0)
                     {
-                        return IncodeResult.HALT_FORINPUT;
+                        return IntcodeResult.HALT_FORINPUT;
                     }
 
                     var @params = GetParameters(instruction.Parameters, parameterModes);
@@ -56,7 +56,7 @@ namespace Helpers
                 Output.Enqueue(_memory[0]);
             }
 
-            return IncodeResult.HALT_TERMINATE;
+            return IntcodeResult.HALT_TERMINATE;
         }
 
         public void SetIndex(int index) => _index = index;

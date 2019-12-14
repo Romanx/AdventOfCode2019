@@ -102,7 +102,7 @@ namespace DaySeven
                 var result = computer.Run();
 
                 signal = (int)computer.Output.Dequeue();
-                if (result == IncodeResult.HALT_FORINPUT)
+                if (result == IntcodeResult.HALT_FORINPUT)
                 {
                     thrusters.Enqueue(computer);
                 }

@@ -1,6 +1,6 @@
 ﻿namespace Helpers
 {
-    public enum IncodeResult
+    public enum IntcodeResult
     {
         NO_RESULT,
         HALT_TERMINATE,
