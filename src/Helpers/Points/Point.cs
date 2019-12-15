@@ -6,6 +6,8 @@ namespace Helpers.Points
 {
     public class Point : IEquatable<Point>
     {
+        public static Point Origin { get; } = new Point(0, 0);
+
         private readonly ImmutableArray<int> _coords;
 
         public Point(int x, int y)
@@ -48,6 +50,8 @@ namespace Helpers.Points
 
         public static Point operator +(Point left, Point right)
             => new Point(left.X + right.X, left.Y + right.Y);
+
+        public static implicit operator Point((int X, int Y) i) => new Point(i.X, i.Y);
 
         public void Deconstruct(out int x, out int y)
         {
