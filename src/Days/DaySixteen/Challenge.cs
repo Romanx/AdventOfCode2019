@@ -1,7 +1,6 @@
 ﻿using Helpers;
 using MoreLinq;
 using System;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
@@ -45,7 +44,7 @@ namespace DaySixteen
                 for (var i = arr.Length - 1; i >= arr.Length / 2; i--)
                 {
                     sum += arr[i];
-                    newSequence[i] = sum % 10;
+                    newSequence[i] = sum.DigitAtPosition(1);
                 }
                 arr = newSequence;
 
@@ -110,15 +109,5 @@ namespace DaySixteen
 
             return res.Repeat().Skip(1).Take(signalCount).ToImmutableArray();
         }
-    }
-
-    public static class StringHelpers
-    {
-        public static IEnumerable<int> CharsToDigit(this string @in) => @in.Select(c => c - '0');
-    }
-
-    public static class NumberHelpers
-    {
-        public static int DigitAtPosition(this int @in, uint pos) => @in.ToString().AsSpan()[^((int)pos)] - '0';
     }
 }
