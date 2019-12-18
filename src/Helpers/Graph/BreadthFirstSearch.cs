@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Helpers.Points;
+using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 
 namespace Helpers.Graph
@@ -33,6 +36,34 @@ namespace Helpers.Graph
             }
 
             return visited;
+        }
+
+        public static ImmutableArray<Point> Search(Point start, Func<Point, IEnumerable<Point>> adjacentFunction)
+        {
+            var visited = ImmutableArray.CreateBuilder<Point>();
+
+            var queue = new Queue<Point>();
+            queue.Enqueue(start);
+
+            while (queue.TryDequeue(out var node))
+            {
+                if (visited.Contains(node))
+                    continue;
+
+                visited.Add(node);
+
+                var adjacentNodes = adjacentFunction(node);
+
+                foreach (var adjacentNode in adjacentNodes)
+                {
+                    if (!visited.Contains(adjacentNode))
+                    {
+                        queue.Enqueue(adjacentNode);
+                    }
+                }
+            }
+
+            return visited.ToImmutable();
         }
     }
 }

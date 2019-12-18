@@ -65,7 +65,7 @@ namespace Helpers
 
         public void WriteToMemory(int position, long value)
         {
-            if (position > _memory.Length)
+            if (position >= _memory.Length)
             {
                 IncreaseMemory();
             }

@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Helpers.Points;
+using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 
 namespace Helpers.Graph
 {
@@ -21,6 +23,30 @@ namespace Helpers.Graph
                 var adjacent = graph.AdjacentList[elementId];
 
                 foreach (var id in adjacent)
+                {
+                    if (!visited.Contains(id))
+                    {
+                        InnerSearch(id);
+                    }
+                }
+            }
+        }
+
+        public static ImmutableArray<Point> Search(Point start, Func<Point, IEnumerable<Point>> adjacentFunction)
+        {
+            var visited = ImmutableArray.CreateBuilder<Point>();
+
+            InnerSearch(start);
+
+            return visited.ToImmutable();
+
+            void InnerSearch(Point node)
+            {
+                visited.Add(node);
+
+                var adjacentNodes = adjacentFunction(node);
+
+                foreach (var id in adjacentNodes)
                 {
                     if (!visited.Contains(id))
                     {
