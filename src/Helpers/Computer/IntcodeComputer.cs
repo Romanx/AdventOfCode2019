@@ -9,6 +9,7 @@ namespace Helpers
     public class IntcodeComputer
     {
         private static readonly Dictionary<OpCodes, Instruction> _validInstructions = BuildInstructions();
+        private readonly ImmutableArray<long> _program;
         const int HaltCode = 99;
 
         private long[] _memory;
@@ -21,11 +22,8 @@ namespace Helpers
 
         public IntcodeComputer(ImmutableArray<long> memory)
         {
-            var scratch = new long[memory.Length];
-            scratch.Populate(0);
-            memory.CopyTo(scratch);
-
-            _memory = scratch;
+            _program = memory;
+            _memory = SetProgram(_program);
         }
 
         public IntcodeResult Run()
@@ -57,6 +55,15 @@ namespace Helpers
             }
 
             return IntcodeResult.HALT_TERMINATE;
+        }
+
+        public void Reset()
+        {
+            Input.Clear();
+            Output.Clear();
+            _index = 0;
+            _relativeBase = 0;
+            _memory = SetProgram(_program);
         }
 
         public void SetIndex(int index) => _index = index;
@@ -143,6 +150,14 @@ namespace Helpers
             }
 
             return results;
+        }
+
+        private static long[] SetProgram(ImmutableArray<long> program)
+        {
+            var scratch = new long[program.Length];
+            scratch.Populate(0);
+            program.CopyTo(scratch);
+            return scratch;
         }
 
         private void IncreaseMemory()
