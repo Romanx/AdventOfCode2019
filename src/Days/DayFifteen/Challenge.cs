@@ -92,7 +92,7 @@ namespace DayFifteen
             }
 
             bool IsNotWall(Point point) => map.TryGetValue(point, out var type) && type != CellType.Wall;
-        }        
+        }
 
         public static void PrintMap(ImmutableDictionary<Point, CellType> map, TextWriter @out)
         {
