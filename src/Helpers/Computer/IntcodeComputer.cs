@@ -42,6 +42,11 @@ namespace Helpers
 
                     var @params = GetParameters(instruction.Parameters, parameterModes);
                     instruction.RunInstruction(@params, this);
+
+                    if (opCode == OpCodes.Write)
+                    {
+                        OutputWritten?.Invoke(this, EventArgs.Empty);
+                    }
                 }
                 else
                 {
@@ -177,6 +182,8 @@ namespace Helpers
                 .Select(t => (Instruction)Activator.CreateInstance(t))
                 .ToDictionary(k => k.OpCode, v => v);
         }
+
+        public event EventHandler? OutputWritten;
     }
 
     internal enum ParameterMode
